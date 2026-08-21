@@ -61,42 +61,38 @@ def load_data(filename):
     is 1 if Revenue is true, and 0 otherwise.
     """
     df = pd.read_csv(filename)
-    evidence = df.drop("Revenue", axis=1)
-    label = df["Revenue"]
 
-    evidence["Administrative"] = evidence["Administrative"].astype(int)
-    evidence["Administrative_Duration"] = evidence["Administrative_Duration"].astype(float)
-    evidence["Informational"] = evidence["Informational"].astype(int)
-    evidence["Informational_Duration"] = evidence["Informational_Duration"].astype(float)
-    evidence["ProductRelated"] = evidence["ProductRelated"].astype(int)
-    evidence["ProductRelated_Duration"] = evidence["ProductRelated_Duration"].astype(float)
-    evidence["BounceRates"] = evidence["BounceRates"].astype(float)
-    evidence["ExitRates"] = evidence["ExitRates"].astype(float)
-    evidence["PageValues"] = evidence["PageValues"].astype(float)
-    evidence["SpecialDay"] = evidence["SpecialDay"].astype(float)
-    evidence["Month"] = evidence["Month"].map({"Jan": 0,
-                                               "Feb": 1,
-                                               "Mar": 2,
-                                               "Apr": 3,
-                                               "May": 4,
-                                               "June": 5,
-                                               "Jul": 6,
-                                               "Aug": 7,
-                                               "Sep": 8,
-                                               "Oct": 9,
-                                               "Nov": 10,
-                                               "Dec": 11})
-    evidence["OperatingSystems"] = evidence["OperatingSystems"].astype(int)
-    evidence["Browser"] = evidence["Browser"].astype(int)
-    evidence["Region"] = evidence["Region"].astype(int)
-    evidence["TrafficType"] = evidence["TrafficType"].astype(int)
-    evidence["VisitorType"] = evidence["VisitorType"].map({"Returning_Visitor": 1, "New_Visitor": 0, "Other": 0})
-    evidence["Weekend"] = evidence["Weekend"].map({False: 0, True: 1})
-    evidence = evidence.values.tolist()
+    df["Month"] = df["Month"].map({"Jan": 0, "Feb": 1, "Mar": 2, "Apr": 3,
+                                   "May": 4, "Jun": 5, "June": 5, "Jul": 6,
+                                   "Aug": 7, "Sep": 8, "Oct": 9, "Nov": 10, "Dec": 11})
+    df["VisitorType"] = df["VisitorType"].map({"Returning_Visitor": 1, "New_Visitor": 0, "Other": 0})
+    df["Weekend"] = df["Weekend"].map({False: 0, True: 1})
+    df["Revenue"] = df["Revenue"].map({False: 0, True: 1})
 
-    label = label.map({True: 1,
-                        False: 0})
-    label = label.values.tolist()
+    evidence = []
+    label = []
+
+    for _, linha in df.iterrows():
+        evidence.append([
+            int(linha["Administrative"]),
+            float(linha["Administrative_Duration"]),
+            int(linha["Informational"]),
+            float(linha["Informational_Duration"]),
+            int(linha["ProductRelated"]),
+            float(linha["ProductRelated_Duration"]),
+            float(linha["BounceRates"]),
+            float(linha["ExitRates"]),
+            float(linha["PageValues"]),
+            float(linha["SpecialDay"]),
+            int(linha["Month"]),
+            int(linha["OperatingSystems"]),
+            int(linha["Browser"]),
+            int(linha["Region"]),
+            int(linha["TrafficType"]),
+            int(linha["VisitorType"]),
+            int(linha["Weekend"])
+        ])
+        label.append(int(linha["Revenue"]))
 
     return evidence, label
 
